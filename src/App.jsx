@@ -8,48 +8,36 @@ class App extends Component {
 
     this.state = {
       currentUser: {name: "Bob"},
-      messages: [
-        {
-          username: "Bob",
-          content: "Has anyone seen my marbles?",
-        },
-        {
-          username: "Anonymous",
-          content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-        }
-      ]
-    }
+      messages: []
+    };
   }
   
   componentDidMount() {
-    // console.log("componentDidMount <App />");
-    // setTimeout(() => {
-    //   console.log("simulating incoming message");
-    //   const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-    //   const messages = this.state.messages.concat(newMessage);
-    //   this.setState({messages: messages})
-    // }, 3000);
-       // When this component mounts (gets added to the DOM)
+    // When this component mounts (gets added to the DOM)
     // Initiate a socket connection to our websocket server
     this.socket = new WebSocket("ws://localhost:3001");
     // When the socket opens, log a message to the console
     this.socket.onopen = e => {
       console.log("Connected to websocket");
     };
-
+    
+    this.socket.onmessage = (event) => {
+      let messageObj = JSON.parse(event.data);
+      let messages = this.state.messages;
+      
+      messages.push(messageObj)
+      this.setState({messages: messages})
+      }
   }
 
 
   handleMessage = (content) => {
-    console.log('AHHHHHHHHHH', this.state);
     const newMessage = {
       type: 'message',
       username: this.state.currentUser.name,
       content: content
     }
-    let messages = this.state.messages
-    messages.push(newMessage)
-    this.setState({messages: messages})
+    this.socket.send(JSON.stringify(newMessage))
   }
 
   render() {

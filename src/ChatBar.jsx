@@ -4,7 +4,6 @@ export default class ChatBar extends Component {
   
   onKeyPress = (ev, props) => {
     if (ev.key === "Enter") {
-      console.log('HIT ENTERRRRR')
       this.props.handleMessage(ev.target.value)
       ev.target.value = ""
     }
