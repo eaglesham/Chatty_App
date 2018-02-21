@@ -21,6 +21,37 @@ class App extends Component {
     }
   }
   
+  componentDidMount() {
+    // console.log("componentDidMount <App />");
+    // setTimeout(() => {
+    //   console.log("simulating incoming message");
+    //   const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
+    //   const messages = this.state.messages.concat(newMessage);
+    //   this.setState({messages: messages})
+    // }, 3000);
+       // When this component mounts (gets added to the DOM)
+    // Initiate a socket connection to our websocket server
+    this.socket = new WebSocket("ws://localhost:3001");
+    // When the socket opens, log a message to the console
+    this.socket.onopen = e => {
+      console.log("Connected to websocket");
+    };
+
+  }
+
+
+  handleMessage = (content) => {
+    console.log('AHHHHHHHHHH', this.state);
+    const newMessage = {
+      type: 'message',
+      username: this.state.currentUser.name,
+      content: content
+    }
+    let messages = this.state.messages
+    messages.push(newMessage)
+    this.setState({messages: messages})
+  }
+
   render() {
     console.log("Rendering <App/>");
     return (
@@ -29,7 +60,7 @@ class App extends Component {
         <a href="/" className="navbar-brand">Chatty</a>
       </nav>
       <MessageList messages = {this.state.messages} />
-      <ChatBar username = {this.state.currentUser.name} />  
+      <ChatBar username = {this.state.currentUser.name} handleMessage = {this.handleMessage} />  
     </div>
   );
   }
