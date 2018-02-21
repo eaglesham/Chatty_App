@@ -40,6 +40,10 @@ class App extends Component {
     this.socket.send(JSON.stringify(newMessage))
   }
 
+  handleName = (content) => {
+   this.setState({currentUser: {name: content}})
+  }
+
   render() {
     console.log("Rendering <App/>");
     return (
@@ -48,7 +52,7 @@ class App extends Component {
         <a href="/" className="navbar-brand">Chatty</a>
       </nav>
       <MessageList messages = {this.state.messages} />
-      <ChatBar username = {this.state.currentUser.name} handleMessage = {this.handleMessage} />  
+      <ChatBar username = {this.state.currentUser.name} handleMessage = {this.handleMessage} handleName = {this.handleName} />  
     </div>
   );
   }
