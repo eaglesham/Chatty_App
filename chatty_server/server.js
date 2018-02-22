@@ -22,14 +22,32 @@ const wss = new SocketServer.Server({ server });
 wss.on('connection', (ws) => {
   console.log('Client connected');
   ws.on('message', function incoming(message) {
-    const messageObj = JSON.parse(message)
-    messageObj.ID = uuidv4();
+    const messageObj = JSON.parse(message);
 
-    wss.clients.forEach(function each(client) {
-      if (client.readyState === SocketServer.OPEN) {
-        client.send(JSON.stringify(messageObj))
-      }
-    })
+    switch(messageObj.type) {
+      case "postMessage":
+        messageObj.type = "incomingMessage";
+        messageObj.ID = uuidv4();
+        
+        wss.clients.forEach(function each(client) {
+          if (client.readyState === SocketServer.OPEN) {
+            client.send(JSON.stringify(messageObj))
+          }
+        });
+        break;
+      case "postNotification":
+        messageObj.type = "incomingNotification";
+        messageObj.ID = uuidv4();
+        let nameChangeMsg = `${messageObj.username} has changed their name to ${messageObj.content}`;
+        messageObj.content = nameChangeMsg;
+  
+        wss.clients.forEach(function each(client) {
+          if (client.readyState === SocketServer.OPEN) {
+            client.send(JSON.stringify(messageObj))
+          }
+        });
+        break;
+    }
   });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.

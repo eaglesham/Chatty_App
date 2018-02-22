@@ -24,25 +24,41 @@ class App extends Component {
     this.socket.onmessage = (event) => {
       let messageObj = JSON.parse(event.data);
       let messages = this.state.messages;
-      
-      messages.push(messageObj)
-      this.setState({messages: messages})
+
+      switch(messageObj.type) {
+        case "incomingMessage":        
+          messages.push(messageObj)
+          this.setState({messages: messages})
+          break;
+        case "incomingNotification":
+          messages.push(messageObj)
+          this.setState({messages: messages})
+          break;
+        default:
+        throw new Error("Unknown event type " + messageObj.type)
       }
+    }
   }
 
 
   handleMessage = (content) => {
     const newMessage = {
-      type: 'message',
+      type: "postMessage",
       username: this.state.currentUser.name,
       content: content
     }
-    this.socket.send(JSON.stringify(newMessage))
+    this.socket.send(JSON.stringify(newMessage));
   }
 
   handleName = (content) => {
+   const newName = {
+     type: "postNotification",
+     username: this.state.currentUser.name,
+     content: content
+   }
+   this.socket.send(JSON.stringify(newName));
    this.setState({currentUser: {name: content}})
-  }
+  } 
 
   render() {
     console.log("Rendering <App/>");
