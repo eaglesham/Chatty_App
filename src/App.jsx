@@ -7,8 +7,9 @@ class App extends Component {
     super(props);
 
     this.state = {
-      currentUser: {name: "Bob"},
-      messages: []
+      currentUser: {name: "Anonymous"},
+      messages: [],
+      numLoggedIn: 0
     };
   }
   
@@ -32,7 +33,10 @@ class App extends Component {
           break;
         case "incomingNotification":
           messages.push(messageObj)
-          this.setState({messages: messages})
+          this.setState({messages: messages}) 
+          break;
+        case "clients":
+          this.setState({numLoggedIn: messageObj.clientNum})
           break;
         default:
         throw new Error("Unknown event type " + messageObj.type)
@@ -61,11 +65,11 @@ class App extends Component {
   } 
 
   render() {
-    console.log("Rendering <App/>");
     return (
     <div>
       <nav className="navbar">
         <a href="/" className="navbar-brand">Chatty</a>
+        <span className="usersCount">{this.state.numLoggedIn} users online.</span>
       </nav>
       <MessageList messages = {this.state.messages} />
       <ChatBar username = {this.state.currentUser.name} handleMessage = {this.handleMessage} handleName = {this.handleName} />  
