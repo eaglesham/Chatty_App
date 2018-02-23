@@ -19,3 +19,7 @@ open http://localhost:3000
 * Webpack
 * [babel-loader](https://github.com/babel/babel-loader)
 * [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
+
+### Screenshot
+
+!["Screenshot of chatty messages"](https://github.com/eaglesham/Chatty_App/blob/master/docs/chatty__screenshot.png?raw=true)
